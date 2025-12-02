@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>知識王挑戰</title>
+    <title>知識王挑戰 (隨機不重複)</title>
 
     <style>
         body {
@@ -70,7 +70,7 @@
             font-size: 1.2em;
             font-weight: bold;
             margin-bottom: 20px;
-            min-height: 25px; /* 確保結果訊息有空間顯示 */
+            min-height: 25px; 
         }
 
         #next-btn {
@@ -99,17 +99,17 @@
         </div>
         
         <div id="options-container">
-            </div>
+        </div>
 
         <div id="result-message">
-            </div>
+        </div>
 
         <button id="next-btn" style="display: none;">下一題</button>
     </div>
 
     <script>
-        // 1. 儲存你的問題 (題庫)
-        const questions = [
+        // 1. 擴充後的題庫 (總共 10 題)
+        const allQuestions = [
             {
                 question: "地球上最高的山峰是？",
                 options: ["聖母峰", "K2", "富士山", "馬特洪峰"],
@@ -129,9 +129,41 @@
                 question: "水在攝氏零度時的狀態是？",
                 options: ["氣態", "液態", "固態", "等離子態"],
                 correctAnswer: "固態"
+            },
+            {
+                question: "太陽系的中心是？",
+                options: ["地球", "月球", "太陽", "火星"],
+                correctAnswer: "太陽"
+            },
+            {
+                question: "一光年代表什麼？",
+                options: ["時間單位", "速度單位", "距離單位", "光線強度"],
+                correctAnswer: "距離單位"
+            },
+            {
+                question: "世界上人口最多的國家是？",
+                options: ["美國", "印度", "中國", "俄羅斯"],
+                correctAnswer: "印度" // 根據最新數據
+            },
+            {
+                question: "JavaScript 主要用於什麼？",
+                options: ["資料庫管理", "網頁前端互動", "伺服器作業系統", "硬體驅動"],
+                correctAnswer: "網頁前端互動"
+            },
+            {
+                question: "誰發明了電話？",
+                options: ["愛迪生", "貝爾", "牛頓", "居里夫人"],
+                correctAnswer: "貝爾"
+            },
+            {
+                question: "Python 是一種什麼？",
+                options: ["蛇的品種", "程式語言", "資料庫名稱", "遊戲主機"],
+                correctAnswer: "程式語言"
             }
         ];
 
+        // 儲存隨機化後的題目列表
+        let shuffledQuestions = [];
         let currentQuestionIndex = 0; // 追蹤目前是第幾題
         let score = 0;               // 追蹤得分
 
@@ -141,20 +173,48 @@
         const resultMessageEl = document.getElementById('result-message');
         const nextBtn = document.getElementById('next-btn');
 
-        // 2. 顯示問題和選項的函數
+        // 2. 隨機洗牌函數 (Fisher-Yates 演算法)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // 交換元素
+            }
+            return array;
+        }
+
+        // 3. 遊戲初始化函數
+        function initializeGame() {
+            // 每次遊戲開始時，對所有題目進行洗牌
+            shuffledQuestions = shuffleArray([...allQuestions]); // 使用 spread operator 複製陣列，避免修改原始題庫
+            currentQuestionIndex = 0;
+            score = 0;
+            displayQuestion();
+            
+            // 確保下一題按鈕是正常的下一題功能
+            nextBtn.removeEventListener('click', initializeGame);
+            nextBtn.onclick = () => { // 重新設置為下一題功能
+                currentQuestionIndex++;
+                displayQuestion();
+            };
+        }
+
+        // 4. 顯示問題和選項的函數
         function displayQuestion() {
             // 檢查是否還有問題
-            if (currentQuestionIndex >= questions.length) {
+            if (currentQuestionIndex >= shuffledQuestions.length) {
                 showFinalScore();
                 return;
             }
 
-            const currentQ = questions[currentQuestionIndex];
+            const currentQ = shuffledQuestions[currentQuestionIndex];
             questionEl.textContent = `第 ${currentQuestionIndex + 1} 題: ${currentQ.question}`; 
             optionsContainerEl.innerHTML = ''; // 清空舊的選項
 
+            // 隨機化選項的順序 (可選，讓選項位置也隨機)
+            const shuffledOptions = shuffleArray([...currentQ.options]);
+
             // 建立選項按鈕
-            currentQ.options.forEach(optionText => {
+            shuffledOptions.forEach(optionText => {
                 const button = document.createElement('button');
                 button.textContent = optionText;
                 button.classList.add('option-btn');
@@ -167,30 +227,30 @@
             nextBtn.style.display = 'none'; // 隱藏下一題按鈕
         }
 
-        // 3. 檢查答案的函數
+        // 5. 檢查答案的函數 (與前一個版本相同)
         function checkAnswer(selectedOption, correctAnswer, clickedButton) {
-            // 禁用所有選項按鈕，防止重複點擊
+            // 禁用所有選項按鈕
             document.querySelectorAll('.option-btn').forEach(btn => {
                 btn.disabled = true;
-                btn.style.opacity = '0.5'; // 變暗未選擇的按鈕
+                btn.style.opacity = '0.5'; 
             });
 
             if (selectedOption === correctAnswer) {
                 score++;
                 resultMessageEl.textContent = '🎉 答對了！';
                 resultMessageEl.style.color = 'green';
-                clickedButton.style.backgroundColor = '#28a745'; // 正確答案顯示綠色
+                clickedButton.style.backgroundColor = '#28a745'; 
                 clickedButton.style.opacity = '1';
             } else {
                 resultMessageEl.textContent = `❌ 答錯了！正確答案是：${correctAnswer}`;
                 resultMessageEl.style.color = 'red';
-                clickedButton.style.backgroundColor = '#dc3545'; // 錯誤答案顯示紅色
+                clickedButton.style.backgroundColor = '#dc3545'; 
                 clickedButton.style.opacity = '1';
 
                 // 標示出正確答案
                 document.querySelectorAll('.option-btn').forEach(btn => {
                     if (btn.textContent === correctAnswer) {
-                        btn.style.backgroundColor = '#17a2b8'; // 正確答案標示為藍色
+                        btn.style.backgroundColor = '#17a2b8'; 
                         btn.style.opacity = '1';
                     }
                 });
@@ -199,37 +259,23 @@
             nextBtn.style.display = 'block'; // 顯示下一題按鈕
         }
 
-        // 4. 處理下一題的點擊事件
-        nextBtn.addEventListener('click', () => {
-            currentQuestionIndex++;
-            displayQuestion(); // 載入下一題
-        });
-
-        // 顯示最終得分
+        // 6. 顯示最終得分
         function showFinalScore() {
             questionEl.textContent = '挑戰結束！';
             optionsContainerEl.innerHTML = '';
-            resultMessageEl.innerHTML = `你的最終得分是：**${score} / ${questions.length}** 題！`;
+            resultMessageEl.innerHTML = `你的最終得分是：**${score} / ${shuffledQuestions.length}** 題！`;
             resultMessageEl.style.color = 'blue';
             resultMessageEl.style.fontSize = '1.8em';
 
             nextBtn.textContent = '重新開始';
             nextBtn.style.display = 'block';
-            nextBtn.onclick = () => { // 點擊重新開始時重置遊戲
-                currentQuestionIndex = 0;
-                score = 0;
-                displayQuestion();
-                nextBtn.textContent = '下一題';
-                nextBtn.onclick = null; // 移除重新開始的事件處理
-                nextBtn.addEventListener('click', () => {
-                    currentQuestionIndex++;
-                    displayQuestion();
-                }, { once: true }); // 重新綁定正常的下一題事件
-            };
+            
+            // 重新開始時，呼叫 initializeGame
+            nextBtn.onclick = initializeGame;
         }
 
         // 遊戲開始！
-        displayQuestion();
+        initializeGame();
     </script>
 
 </body>
