@@ -1,282 +1,211 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>知識王挑戰 (隨機不重複)</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知識王挑戰（30 題抽 10 題）</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-        }
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
 
-        #quiz-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
-        }
+#quiz-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+}
 
-        h1 {
-            color: #007bff;
-        }
+h1 { color: #007bff; }
 
-        #question-display {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #e6f7ff;
-            border-radius: 5px;
-            font-weight: bold;
-        }
+#question-display {
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #e6f7ff;
+    border-radius: 5px;
+    font-weight: bold;
+}
 
-        #options-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* 兩欄佈局 */
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+#options-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
-        .option-btn {
-            padding: 15px;
-            font-size: 1.1em;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+.option-btn {
+    padding: 15px;
+    font-size: 1.05em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-        .option-btn:hover:not(:disabled) {
-            background-color: #0056b3;
-        }
+.option-btn:hover:not(:disabled) {
+    background-color: #0056b3;
+}
 
-        .option-btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
+.option-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
 
-        #result-message {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 20px;
-            min-height: 25px; 
-        }
+#result-message {
+    font-size: 1.2em;
+    font-weight: bold;
+    min-height: 30px;
+}
 
-        #next-btn {
-            padding: 10px 20px;
-            font-size: 1em;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #next-btn:hover {
-            background-color: #1e7e34;
-        }
-    </style>
+#next-btn {
+    padding: 10px 25px;
+    font-size: 1em;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
-    <div id="quiz-container">
-        <h1>知識王挑戰賽 👑</h1>
-        
-        <div id="question-display">
-            問題載入中...
-        </div>
-        
-        <div id="options-container">
-        </div>
+<div id="quiz-container">
+    <h1>知識王挑戰賽 👑</h1>
+    <div id="question-display">題目載入中...</div>
+    <div id="options-container"></div>
+    <div id="result-message"></div>
+    <button id="next-btn" style="display:none;">下一題</button>
+</div>
 
-        <div id="result-message">
-        </div>
+<script>
+// ======================
+// 30 題完整題庫
+// ======================
+const allQuestions = [
+    { question: "地球上最高的山峰是？", options: ["聖母峰","K2","富士山","馬特洪峰"], correctAnswer: "聖母峰" },
+    { question: "HTML 的全名是？", options: ["Hyper Text Markup Language","High Tech Modern Language","Home Tool Markup Language","Hyperlink Markup"], correctAnswer: "Hyper Text Markup Language" },
+    { question: "哪一種動物最大？", options: ["大象","藍鯨","河馬","犀牛"], correctAnswer: "藍鯨" },
+    { question: "水在 0°C 時為？", options: ["液態","氣態","固態","電漿"], correctAnswer: "固態" },
+    { question: "太陽系中心是？", options: ["地球","月球","太陽","火星"], correctAnswer: "太陽" },
+    { question: "一光年是？", options: ["時間","距離","速度","重量"], correctAnswer: "距離" },
+    { question: "人口最多的國家？", options: ["美國","印度","中國","俄羅斯"], correctAnswer: "印度" },
+    { question: "JavaScript 用途？", options: ["後端系統","前端互動","作業系統","硬體"], correctAnswer: "前端互動" },
+    { question: "電話發明者？", options: ["愛迪生","貝爾","牛頓","達文西"], correctAnswer: "貝爾" },
+    { question: "Python 是？", options: ["蛇","語言","資料庫","遊戲"], correctAnswer: "語言" },
 
-        <button id="next-btn" style="display: none;">下一題</button>
-    </div>
+    { question: "CSS 用途？", options: ["資料庫","版面設計","伺服器","硬體"], correctAnswer: "版面設計" },
+    { question: "HTTP 是？", options: ["協定","語言","資料庫","系統"], correctAnswer: "協定" },
+    { question: "1 byte = ?", options: ["4 bit","8 bit","16 bit","32 bit"], correctAnswer: "8 bit" },
+    { question: "地球衛星？", options: ["火星","月球","金星","太陽"], correctAnswer: "月球" },
+    { question: "人類呼吸需要？", options: ["氮氣","氧氣","氫氣","二氧化碳"], correctAnswer: "氧氣" },
+    { question: "HTML 標籤 <> 是？", options: ["註解","標籤","屬性","變數"], correctAnswer: "標籤" },
+    { question: "JS 宣告變數？", options: ["var","int","float","define"], correctAnswer: "var" },
+    { question: "RGB 是？", options: ["顏色","音效","字型","程式"], correctAnswer: "顏色" },
+    { question: "CPU 是？", options: ["記憶體","處理器","硬碟","螢幕"], correctAnswer: "處理器" },
+    { question: "URL 是？", options: ["網址","程式","圖片","系統"], correctAnswer: "網址" },
 
-    <script>
-        // 1. 擴充後的題庫 (總共 10 題)
-        const allQuestions = [
-            {
-                question: "地球上最高的山峰是？",
-                options: ["聖母峰", "K2", "富士山", "馬特洪峰"],
-                correctAnswer: "聖母峰" 
-            },
-            {
-                question: "HTML 的全名是？",
-                options: ["Hyper Text Markup Language", "High Tech Modern Language", "Home Tool Markup Language", "Hyperlink and Text Markup Language"],
-                correctAnswer: "Hyper Text Markup Language"
-            },
-            {
-                question: "哪一種動物是最大的藍色動物？",
-                options: ["大象", "藍鯨", "長頸鹿", "河馬"],
-                correctAnswer: "藍鯨"
-            },
-            {
-                question: "水在攝氏零度時的狀態是？",
-                options: ["氣態", "液態", "固態", "等離子態"],
-                correctAnswer: "固態"
-            },
-            {
-                question: "太陽系的中心是？",
-                options: ["地球", "月球", "太陽", "火星"],
-                correctAnswer: "太陽"
-            },
-            {
-                question: "一光年代表什麼？",
-                options: ["時間單位", "速度單位", "距離單位", "光線強度"],
-                correctAnswer: "距離單位"
-            },
-            {
-                question: "世界上人口最多的國家是？",
-                options: ["美國", "印度", "中國", "俄羅斯"],
-                correctAnswer: "印度" // 根據最新數據
-            },
-            {
-                question: "JavaScript 主要用於什麼？",
-                options: ["資料庫管理", "網頁前端互動", "伺服器作業系統", "硬體驅動"],
-                correctAnswer: "網頁前端互動"
-            },
-            {
-                question: "誰發明了電話？",
-                options: ["愛迪生", "貝爾", "牛頓", "居里夫人"],
-                correctAnswer: "貝爾"
-            },
-            {
-                question: "Python 是一種什麼？",
-                options: ["蛇的品種", "程式語言", "資料庫名稱", "遊戲主機"],
-                correctAnswer: "程式語言"
-            }
-        ];
+    { question: "HTTPS 多了？", options: ["速度","安全","圖片","音效"], correctAnswer: "安全" },
+    { question: "電腦二進位使用？", options: ["0 和 1","1 和 2","A 和 B","ON/OFF"], correctAnswer: "0 和 1" },
+    { question: "地球第幾顆行星？", options: ["第二","第三","第四","第五"], correctAnswer: "第三" },
+    { question: "RAM 是？", options: ["硬碟","記憶體","CPU","顯卡"], correctAnswer: "記憶體" },
+    { question: "HTML 中 p 是？", options: ["圖片","段落","表格","清單"], correctAnswer: "段落" },
+    { question: "JS 陣列用？", options: ["()","{}","[]","<>"], correctAnswer: "[]" },
+    { question: "地球公轉週期？", options: ["一天","一週","一年","十年"], correctAnswer: "一年" },
+    { question: "CSS 顏色 red 是？", options: ["紅","藍","綠","黑"], correctAnswer: "紅" },
+    { question: "網頁副檔名？", options: [".exe",".html",".mp3",".zip"], correctAnswer: ".html" }
+];
 
-        // 儲存隨機化後的題目列表
-        let shuffledQuestions = [];
-        let currentQuestionIndex = 0; // 追蹤目前是第幾題
-        let score = 0;               // 追蹤得分
+// ======================
+let quizQuestions = [];
+let index = 0;
+let score = 0;
 
-        // 抓取 HTML 元素
-        const questionEl = document.getElementById('question-display');
-        const optionsContainerEl = document.getElementById('options-container');
-        const resultMessageEl = document.getElementById('result-message');
-        const nextBtn = document.getElementById('next-btn');
+const qEl = document.getElementById("question-display");
+const optEl = document.getElementById("options-container");
+const msgEl = document.getElementById("result-message");
+const nextBtn = document.getElementById("next-btn");
 
-        // 2. 隨機洗牌函數 (Fisher-Yates 演算法)
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]]; // 交換元素
-            }
-            return array;
-        }
+// 洗牌
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
 
-        // 3. 遊戲初始化函數
-        function initializeGame() {
-            // 每次遊戲開始時，對所有題目進行洗牌
-            shuffledQuestions = shuffleArray([...allQuestions]); // 使用 spread operator 複製陣列，避免修改原始題庫
-            currentQuestionIndex = 0;
-            score = 0;
-            displayQuestion();
-            
-            // 確保下一題按鈕是正常的下一題功能
-            nextBtn.removeEventListener('click', initializeGame);
-            nextBtn.onclick = () => { // 重新設置為下一題功能
-                currentQuestionIndex++;
-                displayQuestion();
-            };
-        }
+// 初始化
+function initGame() {
+    quizQuestions = shuffle([...allQuestions]).slice(0, 10);
+    index = 0;
+    score = 0;
+    nextBtn.textContent = "下一題";
+    showQuestion();
+}
 
-        // 4. 顯示問題和選項的函數
-        function displayQuestion() {
-            // 檢查是否還有問題
-            if (currentQuestionIndex >= shuffledQuestions.length) {
-                showFinalScore();
-                return;
-            }
+// 顯示題目
+function showQuestion() {
+    if (index >= quizQuestions.length) {
+        qEl.textContent = "挑戰完成！";
+        optEl.innerHTML = "";
+        msgEl.innerHTML = `你的得分：${score} / 10`;
+        nextBtn.textContent = "重新開始";
+        nextBtn.style.display = "block";
+        nextBtn.onclick = initGame;
+        return;
+    }
 
-            const currentQ = shuffledQuestions[currentQuestionIndex];
-            questionEl.textContent = `第 ${currentQuestionIndex + 1} 題: ${currentQ.question}`; 
-            optionsContainerEl.innerHTML = ''; // 清空舊的選項
+    const q = quizQuestions[index];
+    qEl.textContent = `第 ${index + 1} 題：${q.question}`;
+    optEl.innerHTML = "";
+    msgEl.textContent = "";
+    nextBtn.style.display = "none";
 
-            // 隨機化選項的順序 (可選，讓選項位置也隨機)
-            const shuffledOptions = shuffleArray([...currentQ.options]);
+    shuffle([...q.options]).forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.className = "option-btn";
+        btn.onclick = () => checkAnswer(opt, q.correctAnswer, btn);
+        optEl.appendChild(btn);
+    });
+}
 
-            // 建立選項按鈕
-            shuffledOptions.forEach(optionText => {
-                const button = document.createElement('button');
-                button.textContent = optionText;
-                button.classList.add('option-btn');
-                // 為每個按鈕添加點擊事件監聽器
-                button.addEventListener('click', () => checkAnswer(optionText, currentQ.correctAnswer, button));
-                optionsContainerEl.appendChild(button);
-            });
+function checkAnswer(sel, ans, btn) {
+    document.querySelectorAll(".option-btn").forEach(b => b.disabled = true);
 
-            resultMessageEl.textContent = ''; // 清空結果訊息
-            nextBtn.style.display = 'none'; // 隱藏下一題按鈕
-        }
+    if (sel === ans) {
+        score++;
+        msgEl.textContent = "🎉 答對了！";
+        msgEl.style.color = "green";
+        btn.style.background = "#28a745";
+    } else {
+        msgEl.textContent = `❌ 正確答案：${ans}`;
+        msgEl.style.color = "red";
+    }
 
-        // 5. 檢查答案的函數 (與前一個版本相同)
-        function checkAnswer(selectedOption, correctAnswer, clickedButton) {
-            // 禁用所有選項按鈕
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.disabled = true;
-                btn.style.opacity = '0.5'; 
-            });
+    nextBtn.style.display = "block";
+    nextBtn.onclick = () => {
+        index++;
+        showQuestion();
+    };
+}
 
-            if (selectedOption === correctAnswer) {
-                score++;
-                resultMessageEl.textContent = '🎉 答對了！';
-                resultMessageEl.style.color = 'green';
-                clickedButton.style.backgroundColor = '#28a745'; 
-                clickedButton.style.opacity = '1';
-            } else {
-                resultMessageEl.textContent = `❌ 答錯了！正確答案是：${correctAnswer}`;
-                resultMessageEl.style.color = 'red';
-                clickedButton.style.backgroundColor = '#dc3545'; 
-                clickedButton.style.opacity = '1';
-
-                // 標示出正確答案
-                document.querySelectorAll('.option-btn').forEach(btn => {
-                    if (btn.textContent === correctAnswer) {
-                        btn.style.backgroundColor = '#17a2b8'; 
-                        btn.style.opacity = '1';
-                    }
-                });
-            }
-
-            nextBtn.style.display = 'block'; // 顯示下一題按鈕
-        }
-
-        // 6. 顯示最終得分
-        function showFinalScore() {
-            questionEl.textContent = '挑戰結束！';
-            optionsContainerEl.innerHTML = '';
-            resultMessageEl.innerHTML = `你的最終得分是：**${score} / ${shuffledQuestions.length}** 題！`;
-            resultMessageEl.style.color = 'blue';
-            resultMessageEl.style.fontSize = '1.8em';
-
-            nextBtn.textContent = '重新開始';
-            nextBtn.style.display = 'block';
-            
-            // 重新開始時，呼叫 initializeGame
-            nextBtn.onclick = initializeGame;
-        }
-
-        // 遊戲開始！
-        initializeGame();
-    </script>
+initGame();
+</script>
 
 </body>
 </html>
