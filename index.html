@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>知識王挑戰（30 題抽 10 題）</title>
+<title>知識王挑戰（50 題抽 10 題）</title>
 
 <style>
 body {
@@ -59,8 +59,8 @@ h1 { color: #007bff; }
 }
 
 .option-btn:disabled {
-    cursor: not-allowed;
     opacity: 0.6;
+    cursor: not-allowed;
 }
 
 #result-message {
@@ -93,7 +93,7 @@ h1 { color: #007bff; }
 
 <script>
 // ======================
-// 30 題完整題庫
+// 50 題題庫
 // ======================
 const allQuestions = [
     { question: "地球上最高的山峰是？", options: ["聖母峰","K2","富士山","馬特洪峰"], correctAnswer: "聖母峰" },
@@ -103,30 +103,46 @@ const allQuestions = [
     { question: "太陽系中心是？", options: ["地球","月球","太陽","火星"], correctAnswer: "太陽" },
     { question: "一光年是？", options: ["時間","距離","速度","重量"], correctAnswer: "距離" },
     { question: "人口最多的國家？", options: ["美國","印度","中國","俄羅斯"], correctAnswer: "印度" },
-    { question: "JavaScript 用途？", options: ["後端系統","前端互動","作業系統","硬體"], correctAnswer: "前端互動" },
-    { question: "電話發明者？", options: ["愛迪生","貝爾","牛頓","達文西"], correctAnswer: "貝爾" },
-    { question: "Python 是？", options: ["蛇","語言","資料庫","遊戲"], correctAnswer: "語言" },
+    { question: "JavaScript 主要用途？", options: ["資料庫","前端互動","作業系統","硬體"], correctAnswer: "前端互動" },
+    { question: "電話發明者？", options: ["愛迪生","貝爾","牛頓","居里夫人"], correctAnswer: "貝爾" },
+    { question: "Python 是？", options: ["蛇","程式語言","資料庫","遊戲"], correctAnswer: "程式語言" },
 
-    { question: "CSS 用途？", options: ["資料庫","版面設計","伺服器","硬體"], correctAnswer: "版面設計" },
-    { question: "HTTP 是？", options: ["協定","語言","資料庫","系統"], correctAnswer: "協定" },
-    { question: "1 byte = ?", options: ["4 bit","8 bit","16 bit","32 bit"], correctAnswer: "8 bit" },
-    { question: "地球衛星？", options: ["火星","月球","金星","太陽"], correctAnswer: "月球" },
-    { question: "人類呼吸需要？", options: ["氮氣","氧氣","氫氣","二氧化碳"], correctAnswer: "氧氣" },
-    { question: "HTML 標籤 <> 是？", options: ["註解","標籤","屬性","變數"], correctAnswer: "標籤" },
-    { question: "JS 宣告變數？", options: ["var","int","float","define"], correctAnswer: "var" },
-    { question: "RGB 是？", options: ["顏色","音效","字型","程式"], correctAnswer: "顏色" },
-    { question: "CPU 是？", options: ["記憶體","處理器","硬碟","螢幕"], correctAnswer: "處理器" },
-    { question: "URL 是？", options: ["網址","程式","圖片","系統"], correctAnswer: "網址" },
+    { question: "CSS 主要用途？", options: ["資料處理","版面設計","後端","作業系統"], correctAnswer: "版面設計" },
+    { question: "HTTP 是什麼？", options: ["語言","協定","硬體","瀏覽器"], correctAnswer: "協定" },
+    { question: "1 Byte 等於？", options: ["4 bit","8 bit","16 bit","32 bit"], correctAnswer: "8 bit" },
+    { question: "地球的天然衛星？", options: ["太陽","月球","火星","金星"], correctAnswer: "月球" },
+    { question: "人類呼吸最需要？", options: ["氮氣","氧氣","氫氣","二氧化碳"], correctAnswer: "氧氣" },
+    { question: "HTML <p> 代表？", options: ["圖片","段落","表格","清單"], correctAnswer: "段落" },
+    { question: "JS 宣告變數可用？", options: ["var","int","float","define"], correctAnswer: "var" },
+    { question: "RGB 是？", options: ["顏色模式","聲音","字型","程式"], correctAnswer: "顏色模式" },
+    { question: "CPU 是？", options: ["記憶體","中央處理器","硬碟","顯卡"], correctAnswer: "中央處理器" },
+    { question: "URL 是？", options: ["圖片","網址","程式","伺服器"], correctAnswer: "網址" },
 
-    { question: "HTTPS 多了？", options: ["速度","安全","圖片","音效"], correctAnswer: "安全" },
-    { question: "電腦二進位使用？", options: ["0 和 1","1 和 2","A 和 B","ON/OFF"], correctAnswer: "0 和 1" },
-    { question: "地球第幾顆行星？", options: ["第二","第三","第四","第五"], correctAnswer: "第三" },
+    { question: "HTTPS 多了？", options: ["速度","安全","畫面","聲音"], correctAnswer: "安全" },
+    { question: "電腦使用的數字系統？", options: ["十進位","二進位","八進位","十六進位"], correctAnswer: "二進位" },
+    { question: "地球是第幾顆行星？", options: ["第二","第三","第四","第五"], correctAnswer: "第三" },
     { question: "RAM 是？", options: ["硬碟","記憶體","CPU","顯卡"], correctAnswer: "記憶體" },
-    { question: "HTML 中 p 是？", options: ["圖片","段落","表格","清單"], correctAnswer: "段落" },
-    { question: "JS 陣列用？", options: ["()","{}","[]","<>"], correctAnswer: "[]" },
-    { question: "地球公轉週期？", options: ["一天","一週","一年","十年"], correctAnswer: "一年" },
-    { question: "CSS 顏色 red 是？", options: ["紅","藍","綠","黑"], correctAnswer: "紅" },
-    { question: "網頁副檔名？", options: [".exe",".html",".mp3",".zip"], correctAnswer: ".html" }
+    { question: "HTML <img> 用於？", options: ["文字","圖片","連結","段落"], correctAnswer: "圖片" },
+    { question: "JS 陣列符號？", options: ["()","{}","[]","<>"], correctAnswer: "[]" },
+    { question: "地球公轉週期？", options: ["一天","一週","一個月","一年"], correctAnswer: "一年" },
+    { question: "CSS red 代表？", options: ["紅色","藍色","綠色","黑色"], correctAnswer: "紅色" },
+    { question: "網頁副檔名？", options: [".exe",".html",".zip",".mp3"], correctAnswer: ".html" },
+
+    { question: "JS 嚴格相等？", options: ["=","==","===","!="], correctAnswer: "===" },
+    { question: "HTML <a> 用來？", options: ["圖片","連結","段落","表格"], correctAnswer: "連結" },
+    { question: "Wi-Fi 是？", options: ["有線","無線","藍牙","紅外線"], correctAnswer: "無線" },
+    { question: "鍵盤 Enter 是？", options: ["刪除","換行","返回","關機"], correctAnswer: "換行" },
+    { question: "電腦開機需載入？", options: ["應用程式","作業系統","圖片","音樂"], correctAnswer: "作業系統" },
+    { question: "JS 註解符號？", options: ["<!-- -->","//","**","##"], correctAnswer: "//" },
+    { question: "HTML 最大標題？", options: ["<h1>","<h2>","<h3>","<h6>"], correctAnswer: "<h1>" },
+    { question: "滑鼠點擊稱？", options: ["Drag","Hover","Click","Scroll"], correctAnswer: "Click" },
+    { question: "瀏覽器用途？", options: ["寫程式","顯示網頁","存資料","畫圖"], correctAnswer: "顯示網頁" },
+
+    { question: "電腦病毒影響？", options: ["硬體","資料","螢幕","鍵盤"], correctAnswer: "資料" },
+    { question: "USB 是？", options: ["網路","連接介面","程式","電池"], correctAnswer: "連接介面" },
+    { question: "解析度越高？", options: ["越模糊","越清晰","越慢","越暗"], correctAnswer: "越清晰" },
+    { question: "程式除錯稱？", options: ["Compile","Debug","Run","Save"], correctAnswer: "Debug" },
+    { question: "雲端是？", options: ["天氣","網路服務","硬體","病毒"], correctAnswer: "網路服務" }
 ];
 
 // ======================
@@ -148,7 +164,7 @@ function shuffle(arr) {
     return arr;
 }
 
-// 初始化
+// 初始化遊戲
 function initGame() {
     quizQuestions = shuffle([...allQuestions]).slice(0, 10);
     index = 0;
@@ -160,9 +176,10 @@ function initGame() {
 // 顯示題目
 function showQuestion() {
     if (index >= quizQuestions.length) {
-        qEl.textContent = "挑戰完成！";
+        qEl.textContent = "🎉 挑戰完成！";
         optEl.innerHTML = "";
         msgEl.innerHTML = `你的得分：${score} / 10`;
+        msgEl.style.color = "blue";
         nextBtn.textContent = "重新開始";
         nextBtn.style.display = "block";
         nextBtn.onclick = initGame;
@@ -173,6 +190,7 @@ function showQuestion() {
     qEl.textContent = `第 ${index + 1} 題：${q.question}`;
     optEl.innerHTML = "";
     msgEl.textContent = "";
+    msgEl.style.color = "black";
     nextBtn.style.display = "none";
 
     shuffle([...q.options]).forEach(opt => {
@@ -184,6 +202,7 @@ function showQuestion() {
     });
 }
 
+// 檢查答案
 function checkAnswer(sel, ans, btn) {
     document.querySelectorAll(".option-btn").forEach(b => b.disabled = true);
 
@@ -193,7 +212,7 @@ function checkAnswer(sel, ans, btn) {
         msgEl.style.color = "green";
         btn.style.background = "#28a745";
     } else {
-        msgEl.textContent = `❌ 正確答案：${ans}`;
+        msgEl.textContent = `❌ 正確答案是：${ans}`;
         msgEl.style.color = "red";
     }
 
